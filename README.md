@@ -26,12 +26,6 @@ cmake --build build --config Release --parallel
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-Smoke-test выполняет два независимых запуска. Первый создаёт Warden до загрузки DLL
-и проверяет первичный полный скан. Второй создаёт Warden после установки хуков и
-проверяет детект через `VirtualProtect`. Для обоих проверяются размер, сигнатура и
-данные сырого дампа. Дополнительная исполняемая аллокация без `BLL2` подтверждает
-отсутствие ложного дампа.
-
 ## Инъекция
 
 ```powershell
@@ -42,13 +36,6 @@ Injector.exe --name <process_name.exe> [path_to_WardenDetector.dll]
 Если путь не указан, инжектор загружает `WardenDetector.dll` из папки, в которой
 находится `Injector.exe`. Явно переданный абсолютный или относительный путь имеет
 приоритет.
-
-Инжектор принимает логи через канал `\\.\pipe\WardenDetectorPipe`. Перед ручным
-`FreeLibrary` необходимо вызвать экспорт `WardenDetectorShutdown`, чтобы снять хуки
-и дождаться завершения worker-потока вне loader lock.
-
-Экспорт `WardenDetectorWaitForReady(timeout_ms)` позволяет дождаться установки хуков
-и завершения первичного полного сканирования.
 
 ## Выходные файлы
 
